@@ -15,13 +15,15 @@ _970001 filling in test data base
 Откроем файл EventLog.html
 Поищем там «Given I open hyperlink».
 
-{ExternalDataProcessor.VanessaAutomation.Form.УправляемаяФорма.Form(5800)}: Error calling context method (ExecuteCommand): Cannot perform an interactive operation on an object that is not available.(File_"C__BuildAgentOne_
+{ExternalDataProcessor.VanessaAutomation.Form.УправляемаяФорма.Form(5800)}: Error calling context method (ExecuteCommand): 
+Cannot perform an interactive operation on an object that is not available.(File_"C__BuildAgentOne_
 work_161527a3295c878a_VAResult_AllSteps_TestDataBase"_)
 
 Т.е. тест не смог открыть навигационную ссылку, так как не нашел объекта.
 Перед этим в EventLog есть запись:
 
-{ExternalDataProcessor.VanessaAutomation.Form.УправляемаяФорма.Form(8993)}: Error calling constructor (ЗаписьТекста): File shared access error 'C:\BuildAgentOne\work\161527a3295c878a\VAResult\logdata\TestDataBase.log
+{ExternalDataProcessor.VanessaAutomation.Form.УправляемаяФорма.Form(8993)}: Error calling constructor (ЗаписьТекста): 
+File shared access error 'C:\BuildAgentOne\work\161527a3295c878a\VAResult\logdata\TestDataBase.log
 
 Т.е., как будто файл был занят, не смогли туда что-то записать, и из-за этого пошли дальнейшие ошибки.
 
