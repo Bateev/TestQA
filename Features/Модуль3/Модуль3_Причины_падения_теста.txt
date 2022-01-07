@@ -1,31 +1,31 @@
-Анализ причин падения тестов.
+Анализ причин падения тестов
+в сборке https://dev.irpteam.com/tc/buildConfiguration/IRP_RunVA/26984?buildTab=artifacts#%2Fallure-report.zip
+
 
 В папке allure-report.zip открываем index.html. Открываем «Категории».
 
 Видим, что произошло 7 падений, они сгруппированы в 6 категорий. Разберем их.
 
 1.
-
 Error calling context method (ExecuteCommand):
 _970001 filling in test data base
 
-В правой части окна пролистываем команды теста, пока не увидим красную Posting Sales Order, под ней красную «Given I open hyperlink».
+В правой части окна пролистываем команды теста, пока не увидим красную «Posting Sales Order», под ней красную «Given I open hyperlink».
 
-Откроем EventLog.html
+Откроем файл EventLog.html
 Поищем там «Given I open hyperlink».
 
 {ExternalDataProcessor.VanessaAutomation.Form.УправляемаяФорма.Form(5800)}: Error calling context method (ExecuteCommand): Cannot perform an interactive operation on an object that is not available.(File_"C__BuildAgentOne_
 work_161527a3295c878a_VAResult_AllSteps_TestDataBase"_)
 
 Т.е. тест не смог открыть навигационную ссылку, так как не нашел объекта.
-Перед этим в EventLog есть запись
+Перед этим в EventLog есть запись:
 
 {ExternalDataProcessor.VanessaAutomation.Form.УправляемаяФорма.Form(8993)}: Error calling constructor (ЗаписьТекста): File shared access error 'C:\BuildAgentOne\work\161527a3295c878a\VAResult\logdata\TestDataBase.log
 
 Т.е., как будто файл был занят, не смогли туда что-то записать, и из-за этого пошли дальнейшие ошибки.
 
 2.
-
 Expected number of lines in <BasisesTree> table is равно 0 and actual number is <2>.
 _015450 check message output for SO when trying to create a purchase order/SC
 
@@ -33,14 +33,13 @@ _015450 check message output for SO when trying to create a purchase order/SC
 
 Внизу видим:
 And I click the button named "FormDocumentPurchaseOrderGenerate"
-И дальше.
+и дальше:
 Expected number of lines in <BasisesTree> table is равно 0 and actual number is <2>.
 
 Как будто сделали заказ на основании, ожидали, что таблица <BasisesTree> будет пустая, а там неожиданно оказалось две строки.
 Нужно смотреть обработку заполнения.
 
 3.
-
 Form table named <List> is not found.
 _0154149 create Cash statement
 
@@ -52,18 +51,14 @@ And I go to line in "List" table … ТаблицаСписок = Ванесса
 Скорее всего, в самом тесте ошиблись в имени элемента.
 
 4.
-
 Line No.
 _092003 check serial lot number in the Retail return receipt
 
-В EventLog видно, что тест искал в некоей таблице 6-ю строку, не смог найти
-
-Для этой ошибки есть картинки diff, expected и actual. Картинки похожи на отчет о движениях в регистре. Для показателя «Row Key» ожидается звездочка, а на самом деле там оказались ссылки
-
+В EventLog видно, что тест искал в некоей таблице 6-ю строку, не смог найти.
+Для этой ошибки есть картинки diff, expected и actual. Картинки похожи на отчет о движениях в регистре. Для показателя «Row Key» ожидается звездочка, а на самом деле там оказались ссылки.
 Возможно, в самом тесте не поставили ссылки для «Row Key» в качестве эталона. Или неправильно выбрали команду, чтобы не проверять ссылки в «Row Key», а проверять только другие столбцы.
 
 5.
-
 The button/command with <Sales invoice> header is not found.
 _024027 cancel line in the SO and create SI
 
@@ -73,10 +68,9 @@ _024027 cancel line in the SO and create SI
 Посмотрим картинки:
 «Этот клиент 1С:Enterprice» и последующие.
 Видим, что после предыдущего шага теста осталось висеть не закрытое окно с предупреждением, и поэтому тест не нашел в нем нужную кнопку.
-Т.е. нужно либо в тесте закрыть все окна перед поиском кнопки <Sales invoice>, либо разбираться, откуда там неожиданное окно.
+Т.е. нужно либо в тесте закрыть все окна перед поиском кнопки <Sales invoice>, либо разбираться, откуда там появилось неожиданное окно.
 
 6.
-
 Unable to move to the required line in <BasisesTree> table.
 _024004 create SI using form link/unlink
 
@@ -93,11 +87,10 @@ TRY   350,00   5,000   Shirt (36/Red)
 Т.е. количество в строке не сошлось.
 
 7.
-
 Unable to move to the required line in <BasisesTree> table.
 _2060018 check link form in the PI with 2 lines with the same items
 
-В разделе Table видим искомую строку 
-TRY 100,00  10,000 Dress (S/Yellow)
+В разделе Table видим искомую строку: 
+TRY   100,00   10,000   Dress (S/Yellow)
 
 В файле ActiveFormState в этой таблице вообще не видим строк. Т.е. строка и найтись не могла. Нужно будет разбираться, почему возникло это расхождение.
