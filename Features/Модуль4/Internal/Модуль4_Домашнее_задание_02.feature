@@ -48,7 +48,7 @@
 			И в таблице "SettingsComposerSettingsFilter" я выбираю текущую строку
 			И в таблице "SettingsComposerSettingsFilter" в поле с именем 'SettingsComposerSettingsFilterRightValue' я ввожу текст '0,000'
 			И в таблице "SettingsComposerSettingsFilter" я завершаю редактирование строки
-		* Отключение предустановленного отбора
+		* Отключение предустановленного отбора по виду мультивалютной аналитики
 			И в таблице "SettingsComposerSettingsFilter" я перехожу к строке:
 				| 'Поле'                         |
 				| 'Вид мультивалютной аналитики' |	
